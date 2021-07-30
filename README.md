@@ -1,4 +1,5 @@
 # yarn-plugin-az-cli-auth
+[![Github Downloads](https://img.shields.io/github/downloads/FishandRichardsonPC/yarn-plugin-az-cli-auth/total)]()
 
 Yarn Berry plugin to use the az cli for authentication to azure devops repos
 
