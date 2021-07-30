@@ -19,3 +19,18 @@ or to install a specific version use
 ```sh
 yarn plugin import https://github.com/FishandRichardsonPC/yarn-plugin-az-cli-auth/releases/download/X.Y.Z/plugin-az-cli-auth.js
 ```
+
+Then you will need to setup your .yarnrc.yml file to connect with azure devops
+
+Example:
+```yaml
+npmRegistries:
+  //pkgs.dev.azure.com/<organization>/_packaging/<azurefeed>/npm/registry:
+    npmAlwaysAuth: true
+  //pkgs.dev.azure.com/<organization>/_packaging/<azurefeed>/npm:
+    npmAlwaysAuth: true
+
+npmScopes:
+  <org>:
+    npmRegistryServer: https://pkgs.dev.azure.com/<organization>/_packaging/<azurefeed>/npm/registry
+```
