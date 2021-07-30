@@ -1,10 +1,10 @@
 name: CI
 
 on:
+  release:
+    types: [ created ]
   push:
     branches: [ master ]
-    tags:
-      - '*'
   pull_request:
     branches: [ master ]
 
@@ -28,3 +28,19 @@ jobs:
         with:
           name: build
           path: bundles/@yarnpkg/plugin-az-cli-auth.js
+  publish:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'release' && github.event.action == 'created'
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: build
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: plugin-az-cli-auth.js
+          asset_name: plugin-az-cli-auth.js
+          tag: ${{ github.ref }}
+          overwrite: true
