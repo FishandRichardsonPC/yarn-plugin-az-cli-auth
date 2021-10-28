@@ -38,6 +38,9 @@ const plugin: Plugin<Hooks & NpmHooks> = {
     } as any,
     hooks: {
         registerPackageExtensions() {
+            if(process.env.SYSTEM_ACCESSTOKEN) {
+                return Promise.resolve()
+            }
             // This checks to see if the user is logged in before installs even start
             return run('az account list').then(() => {});
         },
@@ -48,17 +51,15 @@ const plugin: Plugin<Hooks & NpmHooks> = {
                 ident?: Ident;
             }) {
 
-            const azCliTokenCache = configuration.get("azCliTokenCache") as {
-                [registry: string]: {
-                    expiresOn: string;
-                    token: string;
-                } | undefined
-            }
-
-
             if (registry.startsWith("https://pkgs.dev.azure.com") || registry.startsWith("http://pkgs.dev.azure.com")) {
                 if(process.env.SYSTEM_ACCESSTOKEN) {
-                    return Promise.resolve(`Bearer ${SYSTEM_ACCESSTOKEN}`)
+                    return Promise.resolve(`Bearer ${process.env.SYSTEM_ACCESSTOKEN}`)
+                }
+                const azCliTokenCache = configuration.get("azCliTokenCache") as {
+                    [registry: string]: {
+                        expiresOn: string;
+                        token: string;
+                    } | undefined
                 }
                 const expiresOn = azCliTokenCache[registry]?.expiresOn && DateTime.fromISO(azCliTokenCache[registry].expiresOn)
                 if ((expiresOn?.diffNow("seconds").seconds ?? 0) > 0) {
