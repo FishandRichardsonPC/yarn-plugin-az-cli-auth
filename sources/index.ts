@@ -57,6 +57,9 @@ const plugin: Plugin<Hooks & NpmHooks> = {
 
 
             if (registry.startsWith("https://pkgs.dev.azure.com") || registry.startsWith("http://pkgs.dev.azure.com")) {
+                if(process.env.SYSTEM_ACCESSTOKEN) {
+                    return Promise.resolve(`Bearer ${SYSTEM_ACCESSTOKEN}`)
+                }
                 const expiresOn = azCliTokenCache[registry]?.expiresOn && DateTime.fromISO(azCliTokenCache[registry].expiresOn)
                 if ((expiresOn?.diffNow("seconds").seconds ?? 0) > 0) {
                     return Promise.resolve(`Bearer ${azCliTokenCache[registry].token}`)
